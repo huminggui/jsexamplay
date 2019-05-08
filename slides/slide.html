@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>轮播图的实现</title>
+    <style>
+        .main{
+            width:400px;
+            margin:auto auto;
+            overflow:hidden;
+            /* border:solid 1px red; */
+            position:relative;
+        }
+        .slides{
+            height:200px;
+            width:2000px;
+            transition:1s;
+        }
+        .slides li{
+            width:400px;
+            height:200px;
+            float:left;
+        }
+        img{
+            width:400px;
+            height:200px;
+        }
+        .focus{
+            position: absolute;
+            left:0;
+            bottom:20px;
+            right:0;
+            height:20px;
+            width:120px;
+            margin:0 auto;
+        }
+        .focus .active{
+            background:#ddd;
+        }
+        .focus li{
+            width:20px;
+            height:20px;
+            line-height: 20px;
+            border-radius:50%;
+            background:blue;
+            float:left;
+            margin:10px;
+            text-align: center;
+            color:#fff;
+        }
+
+        /*下边是默认样式*/
+        ul{
+            margin:0;
+            padding:0; 
+        }
+        li{
+            list-style:none;
+        }
+        .clearfix{
+            content:"";
+            overflow:hidden;
+            display: block;
+            clear:both;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="main">
+        <ul class="slides clearfix">
+            <li><img src="./3.jpg" alt=""></li>
+            <li><img src="./1.jpg" alt=""></li>
+            <li><img src="./2.jpg" alt=""></li>
+            <li><img src="./3.jpg" alt=""></li>
+            <li><img src="./1.jpg" alt=""></li>
+        </ul>
+        <ul class="focus">
+                <li class="active">1</li>
+                <li>2</li>
+                <li>3</li>
+        </ul>
+    </div>
+    
+    <script>
+        /*
+            做这个案例的目的就是为了让轮播图的逻辑更加清楚起来
+            1,把第一张图放到最后一张的位置，把第最后一张图放到第一张的位置
+            2,定时器每隔2s钟执行一次函数，函数的作用是轮播图区域往左移动一个显示区域的大小。
+            3，当移动到最后一张图片的时候会瞬间变回到第一张，中间的transition则需要设置为"0ms"。
+            4，transition的bug在这里就不说了。
+            5，焦点和图片的对应，焦点有3个分别是0、1、2 分别对应的是图片的1、2、3。
+            6，当页面到达最后一张的时候，则焦点图是第一焦点。
+
+        */
+        let slides=document.querySelector(".slides");
+        let list=slides.querySelectorAll("li");
+        //焦点dom的获取
+        let focus=document.querySelector(".focus");
+        let focusList=focus.querySelectorAll("li");
+        //
+        let timer=null;
+        let num=1;
+        slides.style.marginLeft=-num*400+"px";
+        setInterval(function(){
+            num++;
+            if(num>list.length-1){
+                slides.style.transition="0ms";
+                num=1;
+                slides.style.marginLeft=-num*400+"px";
+            }
+            setTimeout(function(){
+                slides.style.transition="1s";
+            },0);
+            slides.style.marginLeft=-num*400+"px";
+            focusList.forEach((item,index)=>{
+                item.className="";
+                if(index==num-1){
+                    item.className="active";
+                }
+                if(num==list.length-1){
+                    focusList[0].className="active";
+                }
+            });
+            
+        },2000);
+
+
+    </script>
+</body>
+</html>
